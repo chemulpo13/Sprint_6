@@ -1,0 +1,1 @@
+DZEN_URL = "https://dzen.ru"
