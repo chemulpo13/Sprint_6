@@ -45,11 +45,8 @@ class MainPage(BasePage):
         element = self.wait_for_element(locator)
         return element.text
 
-    @allure.step('Переключение на новую вкладку')
-    def switch_to_new_tab(self):
-        window_handles = self.driver.window_handles
-
-        if len(window_handles) < 2:
-            raise Exception("Не найдена новая вкладка")
-
-        self.driver.switch_to.window(window_handles[-1])
+    @allure.step('Переключение на новую вкладку с ожиданием')
+    def switch_to_new_tab_with_wait(self):
+        current_handles_count = len(self.driver.window_handles)
+        self.wait_for_new_tab(current_handles_count)
+        self.switch_to_new_tab()

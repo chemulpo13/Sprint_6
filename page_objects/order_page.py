@@ -22,8 +22,9 @@ class OrderPage(BasePage):
     ORDER_BUTTON = (By.XPATH, "//div[contains(@class, 'Order_Buttons')]/button[text()='Заказать']")
 
     YES_BUTTON = (By.XPATH, "//button[text()='Да']")
-    ORDER_SUCCESS_MODAL = (
-    By.XPATH, "//div[contains(@class, 'Order_ModalHeader') and contains(text(), 'Заказ оформлен')]")
+    SUCCESS_MODAL = (By.XPATH, "//div[contains(@class, 'Order_Modal__YZ-d3')]")
+    SUCCESS_HEADER = (By.XPATH, "//div[contains(@class, 'Order_ModalHeader')]")
+    SUCCESS_TEXT = "Заказ оформлен"
 
     @allure.step('Заполнение первой страницы формы заказа')
     def fill_order_form_first_page(self, name, surname, address, metro, phone):
@@ -33,7 +34,7 @@ class OrderPage(BasePage):
 
         self.click_element(self.METRO_FIELD)
         self.input_text(self.METRO_FIELD, metro)
-        time.sleep(1)
+        self.wait_for_element(self.METRO_OPTION)
         self.click_element(self.METRO_OPTION)
 
         self.input_text(self.PHONE_FIELD, phone)
@@ -45,11 +46,11 @@ class OrderPage(BasePage):
     @allure.step('Заполнение второй страницы формы заказа')
     def fill_order_form_second_page(self, date, period, color, comment):
         self.input_text(self.DATE_FIELD, date)
-        self.driver.find_element(*self.DATE_FIELD).send_keys(Keys.ESCAPE)
+        self.send_key_to_element(self.DATE_FIELD, Keys.ESCAPE)
 
         self.click_element(self.RENTAL_PERIOD_DROPDOWN)
-        time.sleep(1)
         period_option = (By.XPATH, self.RENTAL_PERIOD_OPTION_TEMPLATE.format(period))
+        self.wait_for_element(period_option)
         self.click_element(period_option)
 
         if color.lower() == 'black':
@@ -66,10 +67,11 @@ class OrderPage(BasePage):
 
     @allure.step('Клик по кнопке "Да" в окне подтверждения')
     def click_yes_button(self):
-        time.sleep(1)
+        self.wait_for_element_visible(self.YES_BUTTON)
         self.click_element(self.YES_BUTTON)
 
     @allure.step('Проверка успешного оформления заказа')
     def check_order_success(self):
-        element = self.wait_for_element(self.ORDER_SUCCESS_MODAL)
-        return element.is_displayed()
+        self.wait_for_element_visible(self.SUCCESS_MODAL)
+        modal_header = self.wait_for_element_visible(self.SUCCESS_HEADER)
+        return self.SUCCESS_TEXT in modal_header.text

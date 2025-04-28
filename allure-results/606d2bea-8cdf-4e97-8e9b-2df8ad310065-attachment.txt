@@ -1,0 +1,1 @@
+Не удалось прокрутить к блоку FAQ: 'MainPage' object has no attribute 'find_element'
