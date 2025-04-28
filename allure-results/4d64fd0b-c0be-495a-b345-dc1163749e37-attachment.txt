@@ -1,0 +1,1 @@
+Не удалось прокрутить к элементу с локатором ('xpath', "//div[@class='accordion']/div[8]/div[@class='accordion__button']")
